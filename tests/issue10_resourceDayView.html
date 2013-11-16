@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href='../build/out/fullcalendar.css' rel='stylesheet' />
+  <link href='../build/out/fullcalendar.print.css' rel='stylesheet' media='print' />
+
+  <style>
+
+    button {
+      font-size: 11px;
+    }
+
+  </style>
+</head>
+<body style='font-size:12px'>
+  <div id='calendar' style='width:70%;margin:20px auto 0;font-family:arial'></div>
+
+
+  <script src='../build/out/jquery.js'></script>
+  <script src='../build/out/jquery-ui.js'></script>
+  
+  <!--<script src='../src/intro.js'></script> -->
+  <script src='../src/defaults.js'></script>
+  <script src='../src/main.js'></script>
+  <script src='../src/Calendar.js'></script>
+  <script src='../src/Header.js'></script>
+  <script src='../src/EventManager.js'></script>
+  <script src='../src/ResourceManager.js'></script>
+  <script src='../src/date_util.js'></script>
+  <script src='../src/util.js'></script>
+  <script src='../src/basic/MonthView.js'></script>
+  <script src='../src/basic/BasicWeekView.js'></script>
+  <script src='../src/basic/BasicDayView.js'></script>
+  <script src='../src/basic/BasicView.js'></script>
+  <script src='../src/basic/BasicEventRenderer.js'></script>
+  <script src='../src/agenda/AgendaWeekView.js'></script>
+  <script src='../src/agenda/AgendaDayView.js'></script>
+  <script src='../src/agenda/AgendaView.js'></script>
+  <script src='../src/agenda/AgendaEventRenderer.js'></script>
+  <script src='../src/resource/ResourceDayView.js'></script>
+  <script src='../src/resource/ResourceView.js'></script>
+  <script src='../src/resource/ResourceEventRenderer.js'></script>
+  <script src='../src/common/View.js'></script>
+  <script src='../src/common/DayEventRenderer.js'></script>
+  <script src='../src/common/SelectionManager.js'></script>
+   <script src='../src/common/OverlayManager.js'></script>  
+  <script src='../src/common/CoordinateGrid.js'></script>
+  <script src='../src/common/HoverListener.js'></script>
+  <script src='../src/common/HorizontalPositionCache.js'></script>
+  <!--<script src='../src/outro.js'></script>-->
+  <!-- <script src='../build/out/fullcalendar.js'></script> -->
+  <script src='../build/out/gcal.js'></script>
+  <script>
+
+    var cal, staticEvents;
+    
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+
+    $(document).ready(function() {
+      cal = $('#calendar').fullCalendar({
+        editable: true,
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,basicWeek,resourceDay'
+        },
+        defaultView: 'resourceDay',
+        resources: [{'id':'resource1','name':'Resource 1', 'className': 'css-class-as-string'},{'id':'resource2', 'name':'Resource 2', 'className': ['green', 'another-css-class-name']},{'id':'resource3', 'name':'Resource 3'}],
+        events: [
+          {
+            title: 'R1: 12-13',
+            start: new Date(y, m, d, 12, 00),
+            end: new Date(y, m, d, 13, 00),
+            allDay: false,
+            resources: ['resource1']
+          },        
+          {
+            title: 'R1: All day',
+            start: new Date(y, m, d, 10, 30),
+            end: new Date(y, m, d, 11, 00),
+            allDay: true,
+            resources: 'resource1'
+          },
+          {
+            title: 'R2: All day',
+            start: new Date(y, m, d, 11, 00),
+            allDay: true,
+            resources: 'resource2'
+          },
+          {
+            title: 'R1/R2: 12-14',
+            start: new Date(y, m, d, 12, 0),
+            end: new Date(y, m, d, 14, 0),
+            allDay: false,
+            resources: ['resource1','resource2']
+          }
+        ]
+      });
+    });
+    
+    function updateEventStart() {
+      var event = cal.fullCalendar('clientEvents', 777)[0];
+      event.start = new Date(y, m, d, 13, 30);
+      event.end = new Date(y, m, d, 14, 50);
+      //event.start = new Date(y, m, 25, 10, 30); // move big days
+      //event.end = new Date(y, m, 26);
+      //event.allDay = true;
+      cal.fullCalendar('updateEvent', event);
+    }
+    
+    function updateRepeatingEvent() {
+      var event = cal.fullCalendar('clientEvents', 999)[0];
+      event.start = new Date(y, m, 4, 13, 30);
+      event.end = new Date(y, m, 5, 2, 0);
+      event.allDay = true;
+      event.title = "repeat yo";
+      //event.editable = false;
+      event.url = "http://google.com/";
+      event.color = 'red';
+      event.textColor = 'green';
+      cal.fullCalendar('updateEvent', event);
+      //console.log(cal.fullCalendar('clientEvents', 2));
+    }
+    
+    function renderEvent(stick) {
+      cal.fullCalendar('renderEvent', {
+        start: new Date(y, m, 17),
+        title: 'heyman'
+      }, stick);
+    }
+    
+    function getView() {
+      var view = cal.fullCalendar('getView');
+      console.log(view.start + ' --- ' + view.end + ' "' + view.title + '"');
+    }
+    
+    function getDate() {
+      console.log(cal.fullCalendar('getDate'));
+    }
+    
+    function optionGetter() {
+      console.log(cal.fullCalendar('option', 'editable'));
+    }
+    
+    var gcalFeed = $.fullCalendar.gcalFeed("http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic");
+    
+    var jsonFeed = "../demos/json-events.php";
+
+  </script>
+
+</body>
+</html>
