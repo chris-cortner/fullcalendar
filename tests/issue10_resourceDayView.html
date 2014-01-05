@@ -71,28 +71,21 @@
         resources: [{'id':'resource1','name':'Resource 1', 'className': 'css-class-as-string'},{'id':'resource2', 'name':'Resource 2', 'className': ['green', 'another-css-class-name']},{'id':'resource3', 'name':'Resource 3'}],
         events: [
           {
-            title: 'R1: 12-13',
-            start: new Date(y, m, d, 12, 00),
-            end: new Date(y, m, d, 13, 00),
+            title: 'R1: 09',
+            start: new Date(y, m, d, 09, 00),
+            end: new Date(y, m, d, 10, 00),
             allDay: false,
             resources: ['resource1']
           },        
           {
             title: 'R1: All day',
-            start: new Date(y, m, d, 10, 30),
-            end: new Date(y, m, d, 11, 00),
+            start: new Date(y, m, d, 10, 00),
             allDay: true,
             resources: 'resource1'
           },
           {
-            title: 'R2: All day',
-            start: new Date(y, m, d, 11, 00),
-            allDay: true,
-            resources: 'resource2'
-          },
-          {
-            title: 'R1/R2: 12-14',
-            start: new Date(y, m, d, 12, 0),
+            title: 'R1/R2: 13-14',
+            start: new Date(y, m, d, 13, 0),
             end: new Date(y, m, d, 14, 0),
             allDay: false,
             resources: ['resource1','resource2']

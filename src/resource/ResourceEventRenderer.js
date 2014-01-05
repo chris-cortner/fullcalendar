@@ -398,6 +398,7 @@ function ResourceEventRenderer() {
 		var snapHeight = getSnapHeight();
 		var snapMinutes = getSnapMinutes();
 		var minMinute = getMinMinute();
+		var resourceIndex;
 		eventElement.draggable({
 			opacity: opt('dragOpacity', 'month'), // use whatever the month view was using
 			revertDuration: opt('dragRevertDuration'),
@@ -409,11 +410,12 @@ function ResourceEventRenderer() {
 					clearOverlays();
 					if (cell) {
 						revert = false;
+						resourceIndex = cell.col;
 						var origDate = cellToDate(0, origCell.col);
 						var date = cellToDate(0, cell.col);
 						dayDelta = dayDiff(date, origDate);
 						if (!cell.row) {
-							// on full-days
+							// on full-days - shades
 							renderDayOverlay(
 								addDays(cloneDate(event.start), dayDelta),
 								addDays(exclEndDay(event), dayDelta)
@@ -465,7 +467,15 @@ function ResourceEventRenderer() {
 							+ minMinute
 							- (event.start.getHours() * 60 + event.start.getMinutes());
 					}
-					eventDrop(this, event, dayDelta, minuteDelta, allDay, ev, ui);
+					// remove the original resource
+					
+					event.resources = [];
+					// add the new resource
+					event.resources.push(resources[resourceIndex].id);
+					//dayDelta = 0;
+
+					eventDrop(this, event, 0, minuteDelta, allDay, ev, ui);
+					//eventDrop(this, event, dayDelta, minuteDelta, allDay, ev, ui);
 				}
 			}
 		});
@@ -498,6 +508,7 @@ function ResourceEventRenderer() {
 		var colDelta, prevColDelta;
 		var dayDelta; // derived from colDelta
 		var minuteDelta, prevMinuteDelta;
+		var resourceIndex;
 
 		eventElement.draggable({
 			scroll: false,
@@ -545,8 +556,9 @@ function ResourceEventRenderer() {
 						var col = origCell.col + colDelta;
 						col = Math.max(0, col);
 						col = Math.min(colCnt-1, col);
-						var date = cellToDate(0, col);
-						dayDelta = dayDiff(date, origDate);
+						// var date = cellToDate(0, col);
+						// dayDelta = dayDiff(date, origDate);
+						resourceIndex = col;
 					}
 
 					// calculate minute delta (only if over slots)
@@ -581,7 +593,12 @@ function ResourceEventRenderer() {
 				clearOverlays();
 				trigger('eventDragStop', eventElement, event, ev, ui);
 
-				if (isInBounds && (isAllDay || dayDelta || minuteDelta)) { // changed!
+				if (isInBounds && (isAllDay || dayDelta || minuteDelta || colDelta)) { // changed!
+					// remove the original resource
+					var i = event.resources.indexOf(resources[origCell.col].id);
+					event.resources.splice(i, 1);
+					// add the new resource
+					event.resources.push(resources[resourceIndex].id);
 					eventDrop(this, event, dayDelta, isAllDay ? 0 : minuteDelta, isAllDay, ev, ui);
 				}
 				else { // either no change or out-of-bounds (draggable has already reverted)
