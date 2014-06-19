@@ -71,7 +71,7 @@ function ResourceView(element, calendar, viewName) {
 	var unselect = t.unselect;
 	var daySelectionMousedown = t.daySelectionMousedown;
 	var slotSegHtml = t.slotSegHtml;
-	var cellToDate = t.cellToDate;
+
 	var dateToCell = t.dateToCell;
 	var rangeToSegments = t.rangeToSegments;
 	var formatDate = calendar.formatDate;
@@ -702,7 +702,9 @@ function ResourceView(element, calendar, viewName) {
 		}
 		return d;
 	}
-	
+    function cellToDate() {
+        return cloneDate(t.visStart);
+    }
 	
 	// get the Y coordinate of the given time on the given day (both Date objects)
 	function timePosition(day, time) { // both date objects. day holds 00:00 of current day

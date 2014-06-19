@@ -1,6 +1,6 @@
 {
   "name": "fullcalendar",
-  "version": "1.6.3",
+  "version": "1.6.3-cortner",
   "dependencies": {
     "jquery": "~1.10.2"
   },
@@ -33,7 +33,7 @@
   },
   "copyright": "2013 Adam Shaw, Sean Kenny - resource view",
   "main": [
-    "/build/component/fullcalendar.js",
-    "/build/component/fullcalendar.css"
+    "/build/out/fullcalendar.js",
+    "/build/out/fullcalendar.css"
   ]
 }
