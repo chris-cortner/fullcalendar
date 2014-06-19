@@ -35,5 +35,14 @@
   "main": [
     "/build/out/fullcalendar.js",
     "/build/out/fullcalendar.css"
+  ],
+  "ignore": [
+    "*",
+    "**/.*",
+    "!/build/out/**",
+    "!/bower.json",
+    "!/changelog.*",
+    "!/license.*",
+    "!/readme.*"
   ]
 }
