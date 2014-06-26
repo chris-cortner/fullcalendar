@@ -144,9 +144,53 @@ function ResourceView(element, calendar, viewName) {
 		}
 		else {
 			buildDayTable(); // rebuilds day table
+            updateSlotAvailablity();
 		}
 	}
-	
+
+    function updateSlotAvailablity(){
+        var slots = slotTable[0].rows;
+        var contentClass = tm + "-widget-content";
+        var dateString = t.visStart.toJSON().split("T")[0];
+
+        for (var col=0; col<colCnt; col++) {
+            var availability = resources[col].availability;
+            var dateBlocks = availability[dateString];
+            var recurringBlocks = availability['every'];
+            var todaysBlocks = (dateBlocks ? dateBlocks : []).concat(recurringBlocks ? recurringBlocks : []);
+
+            for(var slotIndex = 0; slotIndex  < slots.length; slotIndex ++) {
+                var slotDate = cloneDate(t.visStart);
+                addMinutes(slotDate, minMinute + slotIndex * snapMinutes); //step through day by snapMinutes
+
+                var blockClass = getBlockClass();
+                var td = $(slots[slotIndex]).find("td")[col];
+                if(td == null){
+                    var html =
+                        "<td class='" + contentClass + " " + blockClass + "'>" +
+                        "<div style='position:relative'></div>" +
+                        "</td>";
+                    $(html).appendTo(slots[slotIndex]);
+                } else {
+                    $(td).removeClass().addClass(contentClass + " " + blockClass );
+                }
+            }
+        }
+
+        function getBlockClass(){
+            var blockClass = "";
+            for(var blockIndex = 0; blockIndex < todaysBlocks.length; blockIndex++){
+                var block = todaysBlocks[blockIndex];
+                var blockStartDate = new Date(dateString + " " + block.start);
+                var blockEndDate = new Date(dateString + " " + block.end);
+
+                if(slotDate >= blockStartDate && slotDate <=  blockEndDate){
+                    blockClass = "fc-block-res-" + resources[col].id;
+                }
+            }
+            return blockClass;
+        }
+    }
 	
 	function updateOptions() {
 
@@ -250,9 +294,6 @@ function ResourceView(element, calendar, viewName) {
 				"<th class='fc-agenda-axis " + headerClass + "'>" +
 				((!slotNormal || !minutes) ? formatDate(d, opt('axisFormat')) : '&nbsp;') +
 				"</th>" +
-				"<td class='" + contentClass + "'>" +
-				"<div style='position:relative'>&nbsp;</div>" +
-				"</td>" +
 				"</tr>";
 			addMinutes(d, opt('slotMinutes'));
 			slotCnt++;
@@ -261,6 +302,8 @@ function ResourceView(element, calendar, viewName) {
 			"</tbody>" +
 			"</table>";
 		slotTable = $(s).appendTo(slotContainer);
+
+        updateSlotAvailablity();
 		slotTableFirstInner = slotTable.find('div:first');
 		
 		slotBind(slotTable.find('td'));
